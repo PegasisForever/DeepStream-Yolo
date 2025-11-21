@@ -8,6 +8,7 @@ from copy import deepcopy
 import ultralytics.utils
 import ultralytics.models.yolo
 import ultralytics.utils.tal as _m
+from ultralytics.utils.patches import torch_load
 
 sys.modules['ultralytics.yolo'] = ultralytics.models.yolo
 sys.modules['ultralytics.yolo.utils'] = ultralytics.utils
@@ -35,7 +36,7 @@ class DeepStreamOutput(nn.Module):
 
 
 def yolo11_export(weights, device, inplace=True, fuse=True):
-    ckpt = torch.load(weights, map_location='cpu')
+    ckpt = torch_load(weights, map_location='cpu')
     ckpt = (ckpt.get('ema') or ckpt['model']).to(device).float()
     if not hasattr(ckpt, 'stride'):
         ckpt.stride = torch.tensor([32.])
